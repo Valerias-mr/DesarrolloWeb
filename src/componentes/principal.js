@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react'
 import Accordion from 'react-bootstrap/Accordion';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Button from 'react-bootstrap/Button';
+import ModalEstaciones from './modal';
 
 function Principal() {
 
     const [Networks, setNetworks] = useState([])
+    const [modalShow, setModalShow] = useState(false);
 
     const consumirAPI = async () => {
         var url = "http://api.citybik.es/v2/networks"
@@ -24,6 +26,10 @@ function Principal() {
 
     return (
         <div className="mapeo">
+            <ModalEstaciones
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+      />
             {
                 Networks.map(network => {
                     return (
@@ -32,9 +38,7 @@ function Principal() {
                             <center>
                                 <Accordion defaultActiveKey="1">
                                     <Accordion.Item eventKey="0">
-
                                         <Accordion.Header>{network.name}</Accordion.Header>
-
                                         <Accordion.Body className="card__container">
 
                                             <div>
@@ -49,13 +53,15 @@ function Principal() {
 
                                                     <ListGroup.Item as="li">
                                                         <div>
-                                                            <h5>{network.location.country}</h5>
+                                                            <h6>{network.location.country}</h6>
                                                             <p>Pais</p>
                                                         </div>
                                                     </ListGroup.Item>
                                                 </ListGroup>
                                                 <br></br>
-                                                <Button className="button" variant="outline-primary">Ver estaciones</Button>{' '}
+                                                <Button classNamw="button" variant="outline-primary" onClick={() => setModalShow(true)}>
+                                                    Ver estaciones
+                                                </Button>
                                             </div>
 
                                         </Accordion.Body>
