@@ -6,6 +6,7 @@ import ModalEstaciones from './modal';
 
 function Principal() {
 
+    const [dataEspecifica, setDataEspecifica] = useState([])
     const [Networks, setNetworks] = useState([])
     const [modalShow, setModalShow] = useState(false);
 
@@ -18,7 +19,15 @@ function Principal() {
         setNetworks(response.networks)
     }
 
-    console.log(Networks)
+    const consumirAPI2 = async (id) => {
+        var url = `http://api.citybik.es/v2/networks/${id}`
+        const response = await fetch(url, { method: 'GET' })
+            .then(response => response.json())
+            .catch(error => console.log(error))
+
+        setDataEspecifica(response.network)
+        setModalShow(true)
+    }
 
     useEffect(() => {
         consumirAPI()
@@ -27,9 +36,10 @@ function Principal() {
     return (
         <div className="mapeo">
             <ModalEstaciones
-        show={modalShow}
-        onHide={() => setModalShow(false)}
-      />
+                data={dataEspecifica}
+                show={modalShow}
+                onHide={() => setModalShow(false)}
+            />
             {
                 Networks.map(network => {
                     return (
@@ -38,7 +48,7 @@ function Principal() {
                             <center>
                                 <Accordion defaultActiveKey="1">
                                     <Accordion.Item eventKey="0">
-                                        <Accordion.Header>{network.name}</Accordion.Header>
+                                        <Accordion.Header>{network.name} ({network.location.city})</Accordion.Header>
                                         <Accordion.Body className="card__container">
 
                                             <div>
@@ -59,11 +69,10 @@ function Principal() {
                                                     </ListGroup.Item>
                                                 </ListGroup>
                                                 <br></br>
-                                                <Button classNamw="button" variant="outline-primary" onClick={() => setModalShow(true)}>
+                                                <Button className="button" variant="outline-primary" onClick={() => consumirAPI2(network.id)}>
                                                     Ver estaciones
                                                 </Button>
                                             </div>
-
                                         </Accordion.Body>
                                     </Accordion.Item>
                                 </Accordion>
